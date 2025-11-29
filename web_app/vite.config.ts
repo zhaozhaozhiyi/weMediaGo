@@ -10,6 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const resolveAliasPlugin = () => {
   return {
     name: "resolve-alias-extensions",
+    enforce: "pre", // 确保在其他解析器之前运行
     resolveId(source, importer) {
       // 只处理以 @/ 开头的路径
       if (source.startsWith("@/")) {
@@ -20,20 +21,28 @@ const resolveAliasPlugin = () => {
         const extensions = [".ts", ".tsx", ".js", ".jsx", ".mjs", ".mts"]
         for (const ext of extensions) {
           const fullPath = srcPath + ext
-          if (fs.existsSync(fullPath)) {
-            return fullPath
+          try {
+            if (fs.existsSync(fullPath)) {
+              return fullPath
+            }
+          } catch (e) {
+            // 忽略错误，继续尝试下一个扩展名
           }
         }
         
         // 如果文件存在但没有扩展名（目录）
-        if (fs.existsSync(srcPath) && fs.statSync(srcPath).isDirectory()) {
-          const indexFiles = ["index.ts", "index.tsx", "index.js", "index.jsx"]
-          for (const indexFile of indexFiles) {
-            const indexPath = path.join(srcPath, indexFile)
-            if (fs.existsSync(indexPath)) {
-              return indexPath
+        try {
+          if (fs.existsSync(srcPath) && fs.statSync(srcPath).isDirectory()) {
+            const indexFiles = ["index.ts", "index.tsx", "index.js", "index.jsx"]
+            for (const indexFile of indexFiles) {
+              const indexPath = path.join(srcPath, indexFile)
+              if (fs.existsSync(indexPath)) {
+                return indexPath
+              }
             }
           }
+        } catch (e) {
+          // 忽略错误
         }
       }
       return null
@@ -49,9 +58,7 @@ export default defineConfig({
     }),
   ],
   resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
+    // 移除别名配置，由插件处理
     extensions: [".ts", ".tsx", ".js", ".jsx", ".mjs", ".mts", ".json"],
     preserveSymlinks: false,
   },
