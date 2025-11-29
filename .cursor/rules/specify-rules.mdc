@@ -1,0 +1,47 @@
+# WeMediaGos Development Guidelines
+
+Auto-generated from all feature plans. Last updated: 2025-11-29
+
+## Active Technologies
+
+- Frontend: React 18 + TypeScript 5.x + Vite
+- Styling: Tailwind CSS + CSS 变量 Token（见 `docs/ui-spec.md`）
+- UI Components: Radix UI + 封装组件 `web_app/src/components/ui/*`
+- State/Data: Zustand, React Query, Axios
+
+## Project Structure
+
+```text
+web_app/
+├── src/
+│   ├── components/
+│   │   ├── Workspace.tsx
+│   │   ├── Header.tsx
+│   │   ├── Editor.tsx
+│   │   ├── Cropper.tsx
+│   │   ├── Extender.tsx
+│   │   └── ui/
+│   ├── hooks/
+│   ├── lib/
+│   └── assets/
+└── public/
+```
+
+## Commands
+
+- 开发：`cd web_app && npm run dev`
+- 构建：`cd web_app && npm run build`
+- 预览：`cd web_app && npm run preview`
+
+## Code Style
+
+- 组件优先使用 `components/ui` 中的封装，不在业务组件内重复造 Button/Input/Slider。
+- 样式优先使用 Tailwind 工具类 + 设计 Token，不直接写硬编码颜色/圆角/间距。
+- 所有可聚焦元素使用统一 focus-visible 样式（参见 `docs/ui-spec.md` 焦点状态章节）。
+
+## Recent Changes
+
+- 001-implement-prd-pending: Added TypeScript 5.x, React 18 + Vite, Tailwind CSS, Radix UI, Zustand, React Query, Axios
+
+<!-- MANUAL ADDITIONS START -->
+<!-- MANUAL ADDITIONS END -->

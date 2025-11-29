@@ -1,0 +1,61 @@
+/**
+ * WeMediaGo 文档中心自定义样式
+ * 与主项目风格保持一致
+ */
+
+/* 主色调 - 使用与主项目一致的黄色主题 */
+:root {
+  --ifm-color-primary: #ffc800;
+  --ifm-color-primary-dark: #e6b400;
+  --ifm-color-primary-darker: #d9aa00;
+  --ifm-color-primary-darkest: #b38c00;
+  --ifm-color-primary-light: #ffd033;
+  --ifm-color-primary-lighter: #ffd640;
+  --ifm-color-primary-lightest: #ffe466;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  
+  /* 字体设置 */
+  --ifm-font-family-base: 'Inter', 'system-ui', -apple-system, sans-serif;
+  --ifm-font-size-base: 16px;
+  
+  /* 圆角设置 */
+  --ifm-global-radius: 0.5rem;
+}
+
+/* 深色模式 */
+[data-theme='dark'] {
+  --ifm-color-primary: #ffc800;
+  --ifm-color-primary-dark: #e6b400;
+  --ifm-color-primary-darker: #d9aa00;
+  --ifm-color-primary-darkest: #b38c00;
+  --ifm-color-primary-light: #ffd033;
+  --ifm-color-primary-lighter: #ffd640;
+  --ifm-color-primary-lightest: #ffe466;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  
+  /* 深色模式背景 */
+  --ifm-background-color: #0a0a0a;
+  --ifm-background-surface-color: #1a1a1a;
+}
+
+/* 代码块样式优化 */
+.prism-code {
+  border-radius: var(--ifm-global-radius);
+}
+
+/* 表格样式优化 */
+table {
+  border-radius: var(--ifm-global-radius);
+  overflow: hidden;
+}
+
+/* 导航栏样式 */
+.navbar {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* 侧边栏样式 */
+.theme-doc-sidebar-container {
+  border-right: 1px solid var(--ifm-color-emphasis-200);
+}
