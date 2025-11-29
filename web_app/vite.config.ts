@@ -8,13 +8,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    alias: [
-      {
-        find: "@",
-        replacement: path.resolve(__dirname, "./src"),
-      },
-    ],
-    extensions: [".mjs", ".js", ".mts", ".ts", ".jsx", ".tsx", ".json"],
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+    extensions: [".ts", ".tsx", ".js", ".jsx", ".mjs", ".mts", ".json"],
   },
   server: {
     proxy: {
