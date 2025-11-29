@@ -1,16 +1,18 @@
+本项目是较为完整的项目，包含的前端、后端、模型。
+
 <h1 align="center">WeMediaGo</h1>
 <p align="center">AI驱动的全媒体处理平台 - 图片、视频、音频一站式编辑工具</p>
 
 <p align="center">
-  <a href="https://github.com/Sanster/WeMediaGo">
-    <img alt="total download" src="https://pepy.tech/badge/wemediago" />
-  </a>
-  <a href="https://pypi.org/project/wemediago">
-    <img alt="version" src="https://img.shields.io/pypi/v/wemediago" />
-  </a>
-  <a href="">
-    <img alt="python version" src="https://img.shields.io/pypi/pyversions/wemediago" />
-  </a>
+<a href="https://github.com/Sanster/WeMediaGo">
+<img alt="total download" src="https://pepy.tech/badge/wemediago" />
+</a>
+<a href="https://pypi.org/project/wemediago">
+<img alt="version" src="https://img.shields.io/pypi/v/wemediago" />
+</a>
+<a href="">
+<img alt="python version" src="https://img.shields.io/pypi/pyversions/wemediago" />
+</a>
 </p>
 
 ## 🎨 项目概述
@@ -20,13 +22,6 @@ WeMediaGo 是一个功能全面的全媒体处理平台，集成了图片、视�
 ### 📱 平台定位
 
 WeMediaGo 致力于成为**一站式全媒体处理平台**，覆盖从图片修复、视频弹幕到音频可视化的完整媒体处理工作流。无论是快速修图、视频互动增强，还是音频可视化分析，都能在一个平台上高效完成。
-
-### 🏗️ 技术架构
-
-- **前端**: React 18 + TypeScript + Vite + TailwindCSS + Zustand
-- **后端**: FastAPI + PyTorch + Diffusers + OpenCV
-- **AI模型**: LaMa、Stable Diffusion
-- **部署**: 支持CPU/GPU、pip包安装、Docker容器
 
 ## ✨ 核心功能
 
@@ -41,14 +36,14 @@ WeMediaGo 致力于成为**一站式全媒体处理平台**，覆盖从图片修
 
 #### 裁剪功能
 - **预设比例裁剪**: 8种常用比例，适配不同平台
-  - 3:4（竖版短视频）
-  - 21:9（电影屏）
-  - 4:5（小红书封面）
-  - 1:2（长条图）
-  - 9:16（抖音封面）
-  - 1:1（正方形）
-  - 4:3（常规）
-  - 16:9（宽屏）
+- 3:4（竖版短视频）
+- 21:9（电影屏）
+- 4:5（小红书封面）
+- 1:2（长条图）
+- 9:16（抖音封面）
+- 1:1（正方形）
+- 4:3（常规）
+- 16:9（宽屏）
 - **自由裁剪**: 自定义裁剪区域，支持拖拽调整
 - **实时预览**: 裁剪框内显示当前选中区域的宽高像素值
 
@@ -145,9 +140,9 @@ WeMediaGo 致力于成为**一站式全媒体处理平台**，覆盖从图片修
 - **文件管理器**: 内置文件浏览器，方便图像管理
 - **实时处理**: WebSocket通信的实时预览
 - **多种输入格式**: 
-  - 图片: JPEG、PNG、WebP、BMP、TIFF
-  - 视频: MP4、WebM
-  - 音频: MP3、WAV
+- 图片: JPEG、PNG、WebP、BMP、TIFF
+- 视频: MP4、WebM
+- 音频: MP3、WAV
 - **高级遮罩**: 画笔工具、自动分割和遮罩编辑
 - **批量处理**: 命令行接口，支持多张图片批量处理
 
@@ -247,7 +242,7 @@ python3 main.py start --model=lama --device=cuda --port=8080
 
 **等待后端启动完成**，看到类似以下输出表示后端已成功启动：
 ```
-INFO:     Uvicorn running on http://127.0.0.1:8080 (Press CTRL+C to quit)
+INFO: Uvicorn running on http://127.0.0.1:8080 (Press CTRL+C to quit)
 ```
 
 > ⚠️ **重要**：后端启动后，请保持这个终端窗口运行，不要关闭。后端需要持续运行才能提供API服务。
@@ -332,7 +327,7 @@ npm run dev
 
 ```
 1. 启动后端 → 2. 等待后端启动完成 → 3. 启动前端 → 4. 访问 http://localhost:5173
-   (终端1)      (看到 Uvicorn running)    (终端2)
+(终端1) (看到 Uvicorn running) (终端2)
 ```
 
 > 💡 **提示**：两个服务需要同时运行。关闭任何一个都会影响功能使用。
@@ -383,10 +378,10 @@ npm run dev
 ```bash
 cd web_app
 
-npm run dev      # 启动开发服务器（支持热更新）
-npm run build    # 构建生产版本
-npm run lint     # 代码检查
-npm run preview  # 预览生产构建
+npm run dev # 启动开发服务器（支持热更新）
+npm run build # 构建生产版本
+npm run lint # 代码检查
+npm run preview # 预览生产构建
 ```
 
 **注意事项：**
@@ -411,7 +406,6 @@ wemediago start --model=lama --device=cpu --port=8080
 # pip3 install torch==2.1.2 torchvision==0.16.2 --index-url https://download.pytorch.org/whl/cu118
 wemediago start --model=lama --device=cuda --port=8080
 ```
-
 
 ### 📚 文档中心
 
@@ -446,13 +440,116 @@ wemediago start --enable-realesrgan
 
 ```bash
 wemediago run --model=lama --device=cpu \
-  --image=/path/to/image_folder \
-  --mask=/path/to/mask_folder \
-  --output=output_dir
+--image=/path/to/image_folder \
+--mask=/path/to/mask_folder \
+--output=output_dir
 ```
 
 `--image` 是包含输入图像的文件夹，`--mask` 是包含相应遮罩图像的文件夹。
 当 `--mask` 是遮罩文件的路径时，所有图像将使用此遮罩进行处理。
+
+## 📦 打包与分发
+
+### 使用 PyInstaller 打包
+
+WeMediaGo 支持使用 PyInstaller 打包为独立的可执行文件，方便在没有 Python 环境的机器上运行。
+
+#### 前置要求
+
+1. **Python 3.7+** 环境
+2. **Node.js 18+** (用于构建前端)
+3. **所有依赖已安装** (`pip install -r requirements.txt`)
+4. **PyInstaller** (`pip install pyinstaller`)
+
+#### 本地构建
+
+**Windows:**
+
+```bash
+scripts\build_local.bat
+```
+
+**macOS/Linux:**
+
+```bash
+chmod +x scripts/build_local.sh
+./scripts/build_local.sh
+```
+
+构建完成后，可执行文件位于 `dist/wemediago/` 目录。
+
+#### 手动构建步骤
+
+1. **构建前端**:
+   ```bash
+   cd web_app
+   npm install
+   npm run build
+   # 复制构建文件到后端目录
+   cp -r dist/* ../iopaint/web_app/  # Linux/macOS
+   # 或
+   xcopy /E /I /Y dist\* ..\iopaint\web_app\  # Windows
+   ```
+
+2. **使用 PyInstaller 打包**:
+   ```bash
+   pyinstaller wemediago.spec --clean --noconfirm
+   ```
+
+#### PyInstaller 配置文件
+
+项目根目录的 `wemediago.spec` 文件包含了完整的打包配置：
+- 入口点：`main.py`
+- 包含前端静态文件
+- 包含所有必需的 Python 模块
+- 自动处理隐藏导入
+
+如需自定义，可以编辑 `wemediago.spec` 文件。
+
+### 使用 GitHub Actions 自动构建
+
+项目已配置 GitHub Actions 工作流，可以自动为 Windows、macOS 和 Linux 构建可执行文件。
+
+#### 触发构建
+
+**方式1：推送版本标签**
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+**方式2：手动触发**
+
+1. 在 GitHub 仓库页面，进入 **Actions** 标签
+2. 选择 **Build Executables** 工作流
+3. 点击 **Run workflow**
+4. 输入版本号并运行
+
+#### 构建产物
+
+构建完成后，可以在以下位置找到构建产物：
+
+- **GitHub Actions Artifacts**: 在 Actions 页面下载各个平台的构建文件
+- **GitHub Release**: 如果推送了版本标签，会自动创建 Release 并上传所有平台的可执行文件
+
+#### 构建产物格式
+
+- **Windows**: `wemediago-windows-{version}.zip`
+- **macOS**: `wemediago-macos-{version}.zip` (包含 .app 文件)
+- **Linux**: `wemediago-linux-{version}.tar.gz`
+
+#### 使用构建产物
+
+1. 下载对应平台的可执行文件
+2. 解压到任意目录
+3. 运行可执行文件（Windows: `wemediago.exe`, macOS: `wemediago.app`, Linux: `./wemediago`）
+4. 首次运行会自动下载所需的模型文件
+
+> **注意**：
+> - 可执行文件体积较大（包含 Python 解释器和所有依赖）
+> - 首次启动可能需要一些时间
+> - 模型文件需要单独下载，不会包含在可执行文件中
 
 ## 🛠️ 开发指南
 
@@ -468,37 +565,37 @@ wemediago run --model=lama --device=cpu \
 ```bash
 # 前端开发
 cd web_app
-npm run dev          # 启动开发服务器
-npm run build        # 构建生产版本
-npm run lint         # 代码检查
-npm run preview      # 预览生产构建
+npm run dev # 启动开发服务器
+npm run build # 构建生产版本
+npm run lint # 代码检查
+npm run preview # 预览生产构建
 
 # 后端开发
-python3 main.py start --model lama --port 8080    # 启动后端
-pip install -r requirements.txt                   # 安装依赖
-pip install -r requirements-dev.txt               # 安装开发依赖
+python3 main.py start --model lama --port 8080 # 启动后端
+pip install -r requirements.txt # 安装依赖
+pip install -r requirements-dev.txt # 安装开发依赖
 ```
 
 ### 📁 项目结构
 
 ```
 WeMediaGo/
-├── iopaint/                 # 后端核心代码
-│   ├── model/              # AI模型实现
-│   ├── plugins/            # 插件系统
-│   ├── api.py              # FastAPI接口
-│   ├── cli.py              # 命令行接口
-│   └── ...
-├── web_app/                # 前端React应用
-│   ├── src/
-│   │   ├── components/     # React组件
-│   │   │   ├── SidePanel/ # 侧边栏功能面板
-│   │   │   └── ...
-│   │   ├── hooks/          # 自定义Hook
-│   │   └── lib/            # 工具函数和状态管理
-│   └── ...
-├── docker/                 # Docker配置
-└── requirements.txt        # Python依赖
+├── iopaint/ # 后端核心代码
+│ ├── model/ # AI模型实现
+│ ├── plugins/ # 插件系统
+│ ├── api.py # FastAPI接口
+│ ├── cli.py # 命令行接口
+│ └── ...
+├── web_app/ # 前端React应用
+│ ├── src/
+│ │ ├── components/ # React组件
+│ │ │ ├── SidePanel/ # 侧边栏功能面板
+│ │ │ └── ...
+│ │ ├── hooks/ # 自定义Hook
+│ │ └── lib/ # 工具函数和状态管理
+│ └── ...
+├── docker/ # Docker配置
+└── requirements.txt # Python依赖
 ```
 
 ### 🔧 技术栈详解
@@ -513,19 +610,6 @@ WeMediaGo/
 
 #### 后端技术栈
 - **FastAPI**: 现代、快速的Python Web框架
-- **PyTorch**: 深度学习框架
-- **Diffusers**: HuggingFace的扩散模型库
-- **OpenCV**: 计算机视觉库
-- **WebSocket**: 实时通信支持
-
-### 🎯 核心功能模块
-
-1. **模型管理器** (`model_manager.py`): 负责AI模型的加载和切换
-2. **插件系统** (`plugins/`): 可扩展的插件架构
-3. **文件管理器** (`file_manager/`): 图像文件的浏览和管理
-4. **API接口** (`api.py`): RESTful API和WebSocket接口
-5. **命令行工具** (`cli.py`): 批量处理和命令行操作
-6. **前端状态管理** (`lib/states.ts`): 统一的状态管理，支持撤销/重做
 
 ## 💡 使用案例
 
@@ -534,6 +618,7 @@ WeMediaGo/
 - **物体移除**: 删除不需要的人物或物体
 - **缺陷修复**: 修复照片中的划痕、污渍等缺陷
 - **背景清理**: 清理复杂的背景元素
+
 
 ### 社交媒体适配
 - **平台适配**: 快速裁剪图片到适合不同社交媒体的比例
@@ -585,9 +670,6 @@ A:
 A: 
 - 确保使用GPU加速: `--device=cuda`
 - 使用更快的模型如LaMa
-- 减少图像分辨率
-- 关闭不必要的插件
-
 ### 功能问题
 **Q: 如何获得更好的修复效果？**
 A: 
@@ -616,7 +698,7 @@ A:
 ### 主要功能
 
 #### 图片处理
-- ✅ AI图像修复（基于IOPaint）
+- ✅ AI图像修复
 - ✅ 裁剪功能（8种预设比例 + 自由裁剪）
 - ✅ 旋转与翻转（固定角度 + 精确控制）
 - ✅ 滤镜效果（12种预设 + 叠加 + 自定义）
@@ -637,15 +719,4 @@ A:
 - ✅ 音频可视化（频谱图、波形图）
 - ✅ 音频信息解析（时长、采样率、声道数）
 
-## 📄 许可证
-
-本项目采用 Apache 2.0 许可证。
-
-## 🤝 贡献
-
-欢迎提交Issue和Pull Request！
-
-<p align="center">
-  <strong>让AI为您的全媒体处理带来无限可能！</strong>
-</p>
 

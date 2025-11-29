@@ -73,7 +73,7 @@ export default function Particles3DVisualizer({
     if (!canvasRef.current) return
 
     const canvas = canvasRef.current
-    const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl")
+    const gl = (canvas.getContext("webgl") || canvas.getContext("experimental-webgl")) as WebGLRenderingContext | null
     if (!gl) {
       console.error("WebGL not supported")
       return

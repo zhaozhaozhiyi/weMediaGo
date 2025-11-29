@@ -6,8 +6,8 @@ import { getServerConfig } from "@/lib/api"
 import Header from "@/components/Header"
 import Workspace from "@/components/Workspace"
 import Landing from "@/components/Landing"
-import { Toaster } from "./components/ui/toaster"
-import { useStore } from "./lib/states"
+import { Toaster } from "@/components/ui/toaster"
+import { useStore } from "@/lib/states"
 import { useWindowSize } from "react-use"
 
 const SUPPORTED_FILE_TYPE = [
