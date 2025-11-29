@@ -12,6 +12,12 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
     extensions: [".ts", ".tsx", ".js", ".jsx", ".mjs", ".mts", ".json"],
+    preserveSymlinks: false,
+  },
+  build: {
+    commonjsOptions: {
+      include: [/node_modules/],
+    },
   },
   server: {
     proxy: {
