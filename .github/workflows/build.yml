@@ -1,0 +1,195 @@
+name: Build Executables
+
+on:
+  push:
+    tags:
+      - 'v*'  # 推送版本标签时触发
+  workflow_dispatch:  # 允许手动触发
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.0.0)'
+        required: false
+        default: 'dev'
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: web_app/package-lock.json
+
+      - name: Install system dependencies (macOS)
+        run: |
+          brew install libpng jpeg libtiff
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build frontend
+        working-directory: ./web_app
+        run: |
+          npm ci
+          npm run build
+
+      - name: Copy frontend files
+        run: |
+          cp -r web_app/dist/* iopaint/web_app/
+
+      - name: Build executable with PyInstaller
+        run: |
+          pyinstaller wemediago.spec --clean --noconfirm
+
+      - name: Get version
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\/v//')
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: Package macOS app
+        run: |
+          cd dist
+          VERSION="${{ steps.get_version.outputs.version }}"
+          # macOS上PyInstaller会生成一个可执行文件目录
+          if [ -d "wemediago" ]; then
+            # 直接打包目录
+            zip -r "wemediago-macos-${VERSION}.zip" wemediago/
+          elif [ -f "wemediago" ]; then
+            # 如果是单个可执行文件
+            mkdir -p wemediago-package
+            cp wemediago wemediago-package/
+            zip -r "wemediago-macos-${VERSION}.zip" wemediago-package/
+          else
+            echo "错误: 未找到构建产物"
+            exit 1
+          fi
+
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wemediago-macos
+          path: dist/wemediago-macos-*.zip
+          retention-days: 30
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: web_app/package-lock.json
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build frontend
+        working-directory: ./web_app
+        run: |
+          npm ci
+          npm run build
+
+      - name: Copy frontend files
+        shell: powershell
+        run: |
+          Copy-Item -Path "web_app\dist\*" -Destination "iopaint\web_app\" -Recurse -Force
+
+      - name: Build executable with PyInstaller
+        run: |
+          pyinstaller wemediago.spec --clean --noconfirm
+
+      - name: Get version
+        id: get_version
+        shell: powershell
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            $VERSION = "${{ github.event.inputs.version }}"
+          } else {
+            $VERSION = "${{ github.ref }}".Replace("refs/tags/v", "")
+          }
+          Write-Output "version=$VERSION" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          Write-Output "Version: $VERSION"
+
+      - name: Package Windows executable
+        shell: powershell
+        run: |
+          cd dist
+          $VERSION = "${{ steps.get_version.outputs.version }}"
+          if (Test-Path "wemediago\wemediago.exe") {
+            # 打包包含.exe的目录
+            Compress-Archive -Path "wemediago\*" -DestinationPath "wemediago-windows-${VERSION}.zip" -Force
+          } elseif (Test-Path "wemediago") {
+            # 打包整个目录
+            Compress-Archive -Path "wemediago" -DestinationPath "wemediago-windows-${VERSION}.zip" -Force
+          } else {
+            Write-Error "错误: 未找到构建产物"
+            exit 1
+          }
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wemediago-windows
+          path: dist/wemediago-windows-*.zip
+          retention-days: 30
+
+  create-release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build-macos, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Get version
+        id: get_version
+        run: |
+          VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\/v//')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/wemediago-macos/*
+            artifacts/wemediago-windows/*
+          draft: false
+          prerelease: false
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ steps.get_version.outputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
