@@ -142,14 +142,9 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force -Path "models\lama" | Out-Null
           Write-Host "📥 下载 LaMa 模型文件..."
-          Invoke-WebRequest -Uri "https://github.com/Sanster/models/releases/download/add_big_lama/big-lama.pt" `
-            -OutFile "models\lama\big-lama.pt"
-          
-          # 验证文件大小
+          Invoke-WebRequest -Uri "https://github.com/Sanster/models/releases/download/add_big_lama/big-lama.pt" -OutFile "models\lama\big-lama.pt"
           $FileSize = (Get-Item "models\lama\big-lama.pt").Length / 1MB
           Write-Host "✅ 模型文件已下载: $([math]::Round($FileSize, 2)) MB"
-          
-          # 验证文件是否存在
           if (-not (Test-Path "models\lama\big-lama.pt")) {
             Write-Error "❌ 错误: 模型文件下载失败"
             exit 1
