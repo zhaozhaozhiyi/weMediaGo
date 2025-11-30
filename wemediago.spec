@@ -33,8 +33,8 @@ a = Analysis(
     datas=[
         # 包含前端静态文件
         (str(root_dir / 'iopaint' / 'web_app'), 'iopaint/web_app'),
-        # ✅ 包含模型目录（模型文件已存在于项目中）
-        (str(root_dir / 'models'), 'models') if model_path.exists() else None,
+        # ✅ 包含模型目录（如果模型文件存在）
+        *([(str(root_dir / 'models'), 'models')] if model_path.exists() else []),
     ],
     hiddenimports=[
         'iopaint',

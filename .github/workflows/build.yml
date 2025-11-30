@@ -40,6 +40,24 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
+      - name: Download model file
+        run: |
+          mkdir -p models/lama
+          echo "📥 下载 LaMa 模型文件..."
+          curl -L -o models/lama/big-lama.pt \
+            https://github.com/Sanster/models/releases/download/add_big_lama/big-lama.pt
+          
+          # 验证文件大小（大约 196MB）
+          FILE_SIZE=$(stat -f%z models/lama/big-lama.pt)
+          FILE_SIZE_MB=$((FILE_SIZE / 1024 / 1024))
+          echo "✅ 模型文件已下载: ${FILE_SIZE_MB} MB"
+          
+          # 验证文件是否存在
+          if [ ! -f "models/lama/big-lama.pt" ]; then
+            echo "❌ 错误: 模型文件下载失败"
+            exit 1
+          fi
+
       - name: Build frontend
         working-directory: ./web_app
         run: |
@@ -118,6 +136,24 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pyinstaller
+
+      - name: Download model file
+        shell: powershell
+        run: |
+          New-Item -ItemType Directory -Force -Path "models\lama" | Out-Null
+          Write-Host "📥 下载 LaMa 模型文件..."
+          Invoke-WebRequest -Uri "https://github.com/Sanster/models/releases/download/add_big_lama/big-lama.pt" `
+            -OutFile "models\lama\big-lama.pt"
+          
+          # 验证文件大小
+          $FileSize = (Get-Item "models\lama\big-lama.pt").Length / 1MB
+          Write-Host "✅ 模型文件已下载: $([math]::Round($FileSize, 2)) MB"
+          
+          # 验证文件是否存在
+          if (-not (Test-Path "models\lama\big-lama.pt")) {
+            Write-Error "❌ 错误: 模型文件下载失败"
+            exit 1
+          }
 
       - name: Build frontend
         working-directory: ./web_app
