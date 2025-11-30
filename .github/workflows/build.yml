@@ -69,17 +69,24 @@ jobs:
         run: |
           cd dist
           VERSION="${{ steps.get_version.outputs.version }}"
-          # macOS上PyInstaller会生成一个可执行文件目录
+          
+          # Debug: List contents of dist directory
+          echo "Contents of dist directory:"
+          ls -la
+          
+          # macOS PyInstaller generates an executable file directory
           if [ -d "wemediago" ]; then
-            # 直接打包目录
+            # Package directory directly
             zip -r "wemediago-macos-${VERSION}.zip" wemediago/
+            echo "Successfully packaged wemediago-macos-${VERSION}.zip"
           elif [ -f "wemediago" ]; then
-            # 如果是单个可执行文件
+            # If it's a single executable file
             mkdir -p wemediago-package
             cp wemediago wemediago-package/
             zip -r "wemediago-macos-${VERSION}.zip" wemediago-package/
+            echo "Successfully packaged wemediago-macos-${VERSION}.zip"
           else
-            echo "错误: 未找到构建产物"
+            echo "Error: Build artifact not found. Expected wemediago directory or wemediago file in dist folder."
             exit 1
           fi
 
@@ -146,14 +153,26 @@ jobs:
         run: |
           cd dist
           $VERSION = "${{ steps.get_version.outputs.version }}"
+          
+          # Debug: List contents of dist directory
+          Write-Host "Contents of dist directory:"
+          Get-ChildItem -Recurse | Select-Object FullName, Mode
+          
+          # Check for build artifacts
           if (Test-Path "wemediago\wemediago.exe") {
-            # 打包包含.exe的目录
+            # Package directory containing .exe
             Compress-Archive -Path "wemediago\*" -DestinationPath "wemediago-windows-${VERSION}.zip" -Force
+            Write-Host "Successfully packaged wemediago-windows-${VERSION}.zip"
+          } elseif (Test-Path "wemediago.exe") {
+            # Single .exe file
+            Compress-Archive -Path "wemediago.exe" -DestinationPath "wemediago-windows-${VERSION}.zip" -Force
+            Write-Host "Successfully packaged wemediago-windows-${VERSION}.zip"
           } elseif (Test-Path "wemediago") {
-            # 打包整个目录
+            # Package entire directory
             Compress-Archive -Path "wemediago" -DestinationPath "wemediago-windows-${VERSION}.zip" -Force
+            Write-Host "Successfully packaged wemediago-windows-${VERSION}.zip"
           } else {
-            Write-Error "错误: 未找到构建产物"
+            Write-Error "Error: Build artifact not found. Expected wemediago.exe or wemediago directory in dist folder."
             exit 1
           }
 
