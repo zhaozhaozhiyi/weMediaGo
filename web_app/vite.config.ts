@@ -86,9 +86,10 @@ export default defineConfig({
     }),
   ],
   resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
+    // 移除 alias 配置，完全依赖插件处理路径别名
+    // alias: {
+    //   "@": path.resolve(__dirname, "./src"),
+    // },
     extensions: [".ts", ".tsx", ".js", ".jsx", ".mjs", ".mts", ".json"],
     preserveSymlinks: false,
   },
