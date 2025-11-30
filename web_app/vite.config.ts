@@ -1,10 +1,18 @@
+import path from "path"
+import { fileURLToPath } from "url"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 import tsconfigPaths from "vite-tsconfig-paths"
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
 export default defineConfig({
   plugins: [
-    tsconfigPaths(), // 自动从 tsconfig.json 读取路径配置
+    tsconfigPaths({
+      // 明确指定根目录和配置文件
+      root: __dirname,
+      projects: [path.resolve(__dirname, "./tsconfig.json")],
+    }),
     react({
       jsxRuntime: "automatic",
     }),
