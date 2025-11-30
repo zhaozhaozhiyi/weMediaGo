@@ -2,92 +2,11 @@ import path from "path"
 import { fileURLToPath } from "url"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
-import fs from "fs"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-// 插件：确保路径别名正确解析文件扩展名
-function aliasPlugin() {
-  const resolvedPaths = new Map<string, string>()
-  const srcPath = path.resolve(__dirname, "./src")
-  
-  return {
-    name: "alias-resolver",
-    enforce: "pre",
-    resolveId(id, importer) {
-      // 处理 @/ 开头的路径
-      if (id.startsWith("@/")) {
-        // 检查缓存
-        if (resolvedPaths.has(id)) {
-          return resolvedPaths.get(id)!
-        }
-        
-        const relativePath = id.replace("@/", "")
-        const basePath = path.resolve(__dirname, "./src", relativePath)
-        
-        // 尝试不同的扩展名
-        const extensions = [".ts", ".tsx", ".js", ".jsx", ".json"]
-        for (const ext of extensions) {
-          const fullPath = basePath + ext
-          try {
-            if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
-              const resolved = path.resolve(fullPath)
-              resolvedPaths.set(id, resolved)
-              return resolved
-            }
-          } catch (e) {
-            // 忽略错误
-          }
-        }
-        
-        // 尝试目录索引文件
-        try {
-          if (fs.existsSync(basePath) && fs.statSync(basePath).isDirectory()) {
-            for (const ext of extensions) {
-              const indexPath = path.join(basePath, `index${ext}`)
-              if (fs.existsSync(indexPath)) {
-                const resolved = path.resolve(indexPath)
-                resolvedPaths.set(id, resolved)
-                return resolved
-              }
-            }
-          }
-        } catch (e) {
-          // 忽略错误
-        }
-      }
-      
-      // 处理已经通过别名解析但缺少扩展名的路径
-      if (id.startsWith(srcPath) && !path.extname(id)) {
-        // 检查缓存
-        if (resolvedPaths.has(id)) {
-          return resolvedPaths.get(id)!
-        }
-        
-        // 尝试不同的扩展名
-        const extensions = [".ts", ".tsx", ".js", ".jsx", ".json"]
-        for (const ext of extensions) {
-          const fullPath = id + ext
-          try {
-            if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
-              const resolved = path.resolve(fullPath)
-              resolvedPaths.set(id, resolved)
-              return resolved
-            }
-          } catch (e) {
-            // 忽略错误
-          }
-        }
-      }
-      
-      return null
-    },
-  }
-}
-
 export default defineConfig({
   plugins: [
-    aliasPlugin(),
     react({
       jsxRuntime: "automatic",
     }),
