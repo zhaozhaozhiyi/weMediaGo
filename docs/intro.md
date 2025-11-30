@@ -43,12 +43,9 @@ wemediago start --model=lama --device=cuda --port=8080
 
 ## 相关链接
 
-- [项目主页](https://github.com/Sanster/WeMediaGo) - GitHub 仓库
-- [PyPI 包](https://pypi.org/project/wemediago) - Python 包发布
+- [项目主页](https://github.com/zhaozhaozhiyi/weMediaGo) - GitHub 仓库
 
 ---
-
-**最后更新**: 2024年
 
 **文档维护**: WeMediaGo 团队
 
