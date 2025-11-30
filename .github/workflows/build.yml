@@ -74,27 +74,25 @@ jobs:
           echo "Contents of dist directory:"
           ls -la
           
-          # macOS PyInstaller generates an executable file directory
-          if [ -d "wemediago" ]; then
-            # Package directory directly
-            zip -r "wemediago-macos-${VERSION}.zip" wemediago/
-            echo "Successfully packaged wemediago-macos-${VERSION}.zip"
-          elif [ -f "wemediago" ]; then
-            # If it's a single executable file
-            mkdir -p wemediago-package
-            cp wemediago wemediago-package/
-            zip -r "wemediago-macos-${VERSION}.zip" wemediago-package/
-            echo "Successfully packaged wemediago-macos-${VERSION}.zip"
+          # macOS 应该生成 .app 文件
+          if [ -d "WeMediaGo.app" ]; then
+            zip -r "WeMediaGo-macos-${VERSION}.zip" WeMediaGo.app/
+            echo "✅ 成功打包: WeMediaGo-macos-${VERSION}.zip"
+          elif [ -d "wemediago.app" ]; then
+            # 兼容旧名称
+            zip -r "WeMediaGo-macos-${VERSION}.zip" wemediago.app/
+            echo "✅ 成功打包: WeMediaGo-macos-${VERSION}.zip"
           else
-            echo "Error: Build artifact not found. Expected wemediago directory or wemediago file in dist folder."
+            echo "❌ 错误: 未找到 .app 文件"
+            ls -la
             exit 1
           fi
 
       - name: Upload macOS artifact
         uses: actions/upload-artifact@v4
         with:
-          name: wemediago-macos
-          path: dist/wemediago-macos-*.zip
+          name: WeMediaGo-macos
+          path: dist/WeMediaGo-macos-*.zip
           retention-days: 30
 
   build-windows:
@@ -154,33 +152,32 @@ jobs:
           cd dist
           $VERSION = "${{ steps.get_version.outputs.version }}"
           
-          # Debug: List contents of dist directory
-          Write-Host "Contents of dist directory:"
-          Get-ChildItem -Recurse | Select-Object FullName, Mode
+          Write-Host "检查构建产物..."
+          Get-ChildItem
           
-          # Check for build artifacts
-          if (Test-Path "wemediago\wemediago.exe") {
-            # Package directory containing .exe
-            Compress-Archive -Path "wemediago\*" -DestinationPath "wemediago-windows-${VERSION}.zip" -Force
-            Write-Host "Successfully packaged wemediago-windows-${VERSION}.zip"
+          # Windows 应该生成 .exe 文件或目录
+          if (Test-Path "WeMediaGo.exe") {
+            # 单个 .exe 文件（所有文件打包在一起）
+            Compress-Archive -Path "WeMediaGo.exe" -DestinationPath "WeMediaGo-windows-${VERSION}.zip" -Force
+            Write-Host "✅ 成功打包: WeMediaGo-windows-${VERSION}.zip"
+          } elseif (Test-Path "WeMediaGo\WeMediaGo.exe") {
+            # .exe 在子目录中
+            Compress-Archive -Path "WeMediaGo\*" -DestinationPath "WeMediaGo-windows-${VERSION}.zip" -Force
+            Write-Host "✅ 成功打包: WeMediaGo-windows-${VERSION}.zip"
           } elseif (Test-Path "wemediago.exe") {
-            # Single .exe file
-            Compress-Archive -Path "wemediago.exe" -DestinationPath "wemediago-windows-${VERSION}.zip" -Force
-            Write-Host "Successfully packaged wemediago-windows-${VERSION}.zip"
-          } elseif (Test-Path "wemediago") {
-            # Package entire directory
-            Compress-Archive -Path "wemediago" -DestinationPath "wemediago-windows-${VERSION}.zip" -Force
-            Write-Host "Successfully packaged wemediago-windows-${VERSION}.zip"
+            Compress-Archive -Path "wemediago.exe" -DestinationPath "WeMediaGo-windows-${VERSION}.zip" -Force
+            Write-Host "✅ 成功打包: WeMediaGo-windows-${VERSION}.zip"
           } else {
-            Write-Error "Error: Build artifact not found. Expected wemediago.exe or wemediago directory in dist folder."
+            Write-Error "❌ 错误: 未找到 .exe 文件"
+            Get-ChildItem -Recurse
             exit 1
           }
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
-          name: wemediago-windows
-          path: dist/wemediago-windows-*.zip
+          name: WeMediaGo-windows
+          path: dist/WeMediaGo-windows-*.zip
           retention-days: 30
 
   create-release:
@@ -204,11 +201,32 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            artifacts/wemediago-macos/*
-            artifacts/wemediago-windows/*
+            artifacts/WeMediaGo-macos/*
+            artifacts/WeMediaGo-windows/*
           draft: false
           prerelease: false
           tag_name: ${{ github.ref_name }}
           name: Release ${{ steps.get_version.outputs.version }}
+          body: |
+            ## WeMediaGo ${{ steps.get_version.outputs.version }}
+            
+            ### 📦 安装包
+            
+            - **macOS**: `WeMediaGo-macos-*.zip` - 解压后双击 `WeMediaGo.app` 运行
+            - **Windows**: `WeMediaGo-windows-*.zip` - 解压后双击 `WeMediaGo.exe` 运行
+            
+            ### ✨ 功能
+            
+            - ✅ 模型文件已内置，无需下载
+            - ✅ 开箱即用，双击运行
+            - ✅ 支持图片、视频、音频处理
+            
+            ### 📝 使用说明
+            
+            1. 下载对应平台的安装包
+            2. 解压文件
+            3. 双击运行应用
+            
+            > 注意：首次运行可能需要一些时间加载模型
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

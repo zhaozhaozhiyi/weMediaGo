@@ -1,4 +1,5 @@
 import os
+import sys
 from pathlib import Path
 
 import cv2
@@ -12,8 +13,17 @@ from iopaint.helper import (
 from iopaint.schema import InpaintRequest
 from .base import InpaintModel
 
-# 获取项目根目录（iopaint的父目录）
-CURRENT_DIR = Path(__file__).parent.parent.parent.absolute()
+# 获取项目根目录 - 支持 PyInstaller 打包
+def get_base_path():
+    """获取项目根目录，兼容开发环境和 PyInstaller 打包环境"""
+    if hasattr(sys, '_MEIPASS'):
+        # PyInstaller 打包后，资源文件在临时目录
+        return Path(sys._MEIPASS)
+    else:
+        # 开发环境：从当前文件位置计算项目根目录
+        return Path(__file__).parent.parent.parent.absolute()
+
+CURRENT_DIR = get_base_path()
 LOCAL_MODEL_PATH = CURRENT_DIR / "models" / "lama" / "big-lama.pt"
 # MD5校验值
 LAMA_MODEL_MD5 = "e3aa4aaa15225a33ec84f9f4bc47e500"
