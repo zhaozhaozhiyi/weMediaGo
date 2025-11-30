@@ -67,8 +67,13 @@ function aliasPlugin(): Plugin {
         // 忽略错误
       }
 
-      // 如果都找不到，返回 null 让 Vite 使用默认解析
-      return null
+      // 如果都找不到，抛出一个清晰的错误信息
+      const triedPaths = orderedExts.map((ext) => basePath + ext).join(", ")
+      throw new Error(
+        `[alias-resolver] Cannot resolve "${id}" from "${importer || "unknown"}". ` +
+          `Tried paths: ${triedPaths}. ` +
+          `Make sure the file exists in src directory.`
+      )
     },
   }
 }
