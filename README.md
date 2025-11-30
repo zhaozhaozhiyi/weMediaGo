@@ -3,18 +3,6 @@
 <h1 align="center">WeMediaGo</h1>
 <p align="center">AI驱动的全媒体处理平台 - 图片、视频、音频一站式编辑工具</p>
 
-<p align="center">
-<a href="https://github.com/Sanster/WeMediaGo">
-<img alt="total download" src="https://pepy.tech/badge/wemediago" />
-</a>
-<a href="https://pypi.org/project/wemediago">
-<img alt="version" src="https://img.shields.io/pypi/v/wemediago" />
-</a>
-<a href="">
-<img alt="python version" src="https://img.shields.io/pypi/pyversions/wemediago" />
-</a>
-</p>
-
 ## 🎨 项目概述
 
 WeMediaGo 是一个功能全面的全媒体处理平台，集成了图片、视频、音频三大媒体类型的编辑与处理能力。平台结合了最先进的AI图像修复技术与传统媒体编辑功能，采用现代Web架构设计，包含React前端和FastAPI后端，为自媒体创作者、设计师、视频制作人和内容生产者提供专业级的媒体处理能力。
@@ -150,46 +138,69 @@ WeMediaGo 致力于成为**一站式全媒体处理平台**，覆盖从图片修
 
 本项目包含前端、后端和文档中心三个部分。
 
-### 📦 方式一：使用已发布的包（推荐，最简单）
+### 🚀 方式一：一键启动脚本（最简单，推荐）
 
-最简单的方式，后端和前端会自动集成在一起启动。
+最简单快捷的启动方式，一键启动所有服务并自动打开浏览器。
 
-#### 1. 安装
+#### 前置要求
 
-```bash
-pip3 install wemediago
-```
+- Python 3.7+
+- Node.js 18+ ([下载地址](https://nodejs.org/en))
+- 已安装项目依赖（首次使用需要执行 `pip install -r requirements.txt` 和 `cd web_app && npm install`）
 
-#### 2. 检查模型文件
+#### macOS/Linux 用户
 
-确保模型文件存在于项目根目录：
-```bash
-# 检查 LaMa 模型文件是否存在
-ls models/lama/big-lama.pt
-```
+1. **给脚本添加执行权限**（首次使用）：
+   ```bash
+   chmod +x start_mac.command
+   ```
 
-如果模型文件不存在，需要下载并放置到 `models/lama/big-lama.pt` 位置。
-模型下载地址请参考 `models/lama/README.md`。
+2. **运行启动脚本**：
+   ```bash
+   # 方式1：双击运行（Finder 中双击 start_mac.command）
+   # 方式2：终端运行
+   ./start_mac.command
+   ```
 
-#### 3. 启动服务
+3. **等待服务启动**：
+   - 脚本会自动启动后端服务（端口 8080）
+   - 自动启动前端服务（端口 5173）
+   - 自动启动文档中心（端口 3000）
+   - 自动打开浏览器访问前端首页
 
-```bash
-# CPU模式
-wemediago start --model=lama --device=cpu --port=8080
+#### Windows 用户
 
-# GPU模式（需要先安装CUDA版本的PyTorch）
-# pip3 install torch==2.1.2 torchvision==0.16.2 --index-url https://download.pytorch.org/whl/cu118
-wemediago start --model=lama --device=cuda --port=8080
-```
+1. **运行启动脚本**：
+   - 双击 `start_win.bat` 文件即可
 
-#### 4. 访问应用
+2. **等待服务启动**：
+   - 脚本会自动启动后端服务（端口 8080）
+   - 自动启动前端服务（端口 5173）
+   - 自动启动文档中心（端口 3000）
+   - 自动打开浏览器访问前端首页
 
-启动成功后，访问 http://localhost:8080 即可使用完整的 WeMediaGo 功能。
+#### 使用说明
 
-**说明：**
-- 这种方式会自动启动后端，并将前端构建文件集成在后端服务中
-- 所有功能开箱即用，无需额外配置
-- 其他插件的模型文件会在首次使用时自动下载到默认目录（`~/.cache`），可通过 `--model-dir` 参数指定下载目录
+- ✅ 所有服务会在独立的终端/命令窗口中运行
+- ✅ 启动后会自动打开浏览器访问前端首页（`http://localhost:5173`）
+- ✅ 从首页可以点击"立即开始"按钮跳转到应用页面
+- ✅ 从首页可以点击"文档中心"按钮跳转到文档页面
+- ⚠️ 关闭对应的终端/命令窗口即可停止相应服务
+
+#### 注意事项
+
+- 首次使用前，请确保已安装所有依赖：
+  ```bash
+  # 安装 Python 依赖
+  pip install -r requirements.txt
+  
+  # 安装前端依赖
+  cd web_app
+  npm install
+  cd ..
+  ```
+- 确保模型文件存在于 `models/lama/big-lama.pt`（参考下方模型文件说明）
+- 如果端口被占用，脚本会提示警告，但不会阻止启动
 
 ### 🔧 方式二：开发模式（本地开发）
 
@@ -205,7 +216,7 @@ wemediago start --model=lama --device=cuda --port=8080
 #### 步骤2：克隆项目
 
 ```bash
-git clone https://github.com/Sanster/WeMediaGo.git
+git clone https://github.com/zhaozhaozhiyi/weMediaGo.git
 cd WeMediaGo
 ```
 
@@ -342,6 +353,49 @@ npm run build
 cp -r dist/ ../iopaint/web_app
 ```
 
+
+### 📦 方式三：使用已发布的包
+
+最简单的方式，后端和前端会自动集成在一起启动。
+
+#### 1. 安装
+
+```bash
+pip3 install wemediago
+```
+
+#### 2. 检查模型文件
+
+确保模型文件存在于项目根目录：
+```bash
+# 检查 LaMa 模型文件是否存在
+ls models/lama/big-lama.pt
+```
+
+如果模型文件不存在，需要下载并放置到 `models/lama/big-lama.pt` 位置。
+模型下载地址请参考 `models/lama/README.md`。
+
+#### 3. 启动服务
+
+```bash
+# CPU模式
+wemediago start --model=lama --device=cpu --port=8080
+
+# GPU模式（需要先安装CUDA版本的PyTorch）
+# pip3 install torch==2.1.2 torchvision==0.16.2 --index-url https://download.pytorch.org/whl/cu118
+wemediago start --model=lama --device=cuda --port=8080
+```
+
+#### 4. 访问应用
+
+启动成功后，访问 http://localhost:8080 即可使用完整的 WeMediaGo 功能。
+
+**说明：**
+- 这种方式会自动启动后端，并将前端构建文件集成在后端服务中
+- 所有功能开箱即用，无需额外配置
+- 其他插件的模型文件会在首次使用时自动下载到默认目录（`~/.cache`），可通过 `--model-dir` 参数指定下载目录
+
+
 ### 🎨 单独启动前端（仅用于UI开发）
 
 **适用场景**：只进行前端UI开发、样式调整、组件调试等，不需要实际功能运行。
@@ -390,23 +444,6 @@ npm run preview # 预览生产构建
 - ⚠️ 如果后端未启动，调用API时会报错（不影响界面显示）
 - ⚠️ 实际功能（图片处理、文件上传等）需要后端支持才能使用
 
-#### 安装
-
-```bash
-pip3 install wemediago
-```
-
-#### 启动完整服务
-
-```bash
-# CPU模式
-wemediago start --model=lama --device=cpu --port=8080
-
-# GPU模式（需要先安装CUDA版本的PyTorch）
-# pip3 install torch==2.1.2 torchvision==0.16.2 --index-url https://download.pytorch.org/whl/cu118
-wemediago start --model=lama --device=cuda --port=8080
-```
-
 ### 📚 文档中心
 
 项目文档位于 `docs/` 目录，包含以下文档：
@@ -415,141 +452,6 @@ wemediago start --model=lama --device=cuda --port=8080
 - `ui-spec.md` - UI组件、主题与布局规范
 - `xuqiu.md` - 需求文档
 
-**查看文档的方式：**
-
-1. **直接查看Markdown文件**：使用任何 Markdown 阅读器（如 VS Code、Typora、Obsidian 等）打开 `docs/` 目录下的文件
-
-2. **使用在线Markdown查看器**：将 Markdown 文件内容复制到在线查看器中查看
-
-3. **GitHub/GitLab预览**：如果在 GitHub/GitLab 等平台查看，平台会自动渲染 Markdown
-
-### 🔌 启用插件
-
-```bash
-# 启用交互式分割插件
-wemediago start --enable-interactive-seg --interactive-seg-device=cuda
-
-# 启用背景移除插件
-wemediago start --enable-remove-bg
-
-# 启用超分辨率插件
-wemediago start --enable-realesrgan
-```
-
-### 📦 批量处理
-
-```bash
-wemediago run --model=lama --device=cpu \
---image=/path/to/image_folder \
---mask=/path/to/mask_folder \
---output=output_dir
-```
-
-`--image` 是包含输入图像的文件夹，`--mask` 是包含相应遮罩图像的文件夹。
-当 `--mask` 是遮罩文件的路径时，所有图像将使用此遮罩进行处理。
-
-## 📦 打包与分发
-
-### 使用 PyInstaller 打包
-
-WeMediaGo 支持使用 PyInstaller 打包为独立的可执行文件，方便在没有 Python 环境的机器上运行。
-
-#### 前置要求
-
-1. **Python 3.7+** 环境
-2. **Node.js 18+** (用于构建前端)
-3. **所有依赖已安装** (`pip install -r requirements.txt`)
-4. **PyInstaller** (`pip install pyinstaller`)
-
-#### 本地构建
-
-**Windows:**
-
-```bash
-scripts\build_local.bat
-```
-
-**macOS/Linux:**
-
-```bash
-chmod +x scripts/build_local.sh
-./scripts/build_local.sh
-```
-
-构建完成后，可执行文件位于 `dist/wemediago/` 目录。
-
-#### 手动构建步骤
-
-1. **构建前端**:
-   ```bash
-   cd web_app
-   npm install
-   npm run build
-   # 复制构建文件到后端目录
-   cp -r dist/* ../iopaint/web_app/  # Linux/macOS
-   # 或
-   xcopy /E /I /Y dist\* ..\iopaint\web_app\  # Windows
-   ```
-
-2. **使用 PyInstaller 打包**:
-   ```bash
-   pyinstaller wemediago.spec --clean --noconfirm
-   ```
-
-#### PyInstaller 配置文件
-
-项目根目录的 `wemediago.spec` 文件包含了完整的打包配置：
-- 入口点：`main.py`
-- 包含前端静态文件
-- 包含所有必需的 Python 模块
-- 自动处理隐藏导入
-
-如需自定义，可以编辑 `wemediago.spec` 文件。
-
-### 使用 GitHub Actions 自动构建
-
-项目已配置 GitHub Actions 工作流，可以自动为 Windows、macOS 和 Linux 构建可执行文件。
-
-#### 触发构建
-
-**方式1：推送版本标签**
-
-```bash
-git tag v1.0.0
-git push origin v1.0.0
-```
-
-**方式2：手动触发**
-
-1. 在 GitHub 仓库页面，进入 **Actions** 标签
-2. 选择 **Build Executables** 工作流
-3. 点击 **Run workflow**
-4. 输入版本号并运行
-
-#### 构建产物
-
-构建完成后，可以在以下位置找到构建产物：
-
-- **GitHub Actions Artifacts**: 在 Actions 页面下载各个平台的构建文件
-- **GitHub Release**: 如果推送了版本标签，会自动创建 Release 并上传所有平台的可执行文件
-
-#### 构建产物格式
-
-- **Windows**: `wemediago-windows-{version}.zip`
-- **macOS**: `wemediago-macos-{version}.zip` (包含 .app 文件)
-- **Linux**: `wemediago-linux-{version}.tar.gz`
-
-#### 使用构建产物
-
-1. 下载对应平台的可执行文件
-2. 解压到任意目录
-3. 运行可执行文件（Windows: `wemediago.exe`, macOS: `wemediago.app`, Linux: `./wemediago`）
-4. 首次运行会自动下载所需的模型文件
-
-> **注意**：
-> - 可执行文件体积较大（包含 Python 解释器和所有依赖）
-> - 首次启动可能需要一些时间
-> - 模型文件需要单独下载，不会包含在可执行文件中
 
 ## 🛠️ 开发指南
 
@@ -720,3 +622,4 @@ A:
 - ✅ 音频信息解析（时长、采样率、声道数）
 
 
+--- end ---
