@@ -15,20 +15,33 @@ function aliasPlugin(): Plugin {
     name: "alias-resolver",
     enforce: "pre", // 确保在其他插件之前运行
     resolveId(id, importer) {
-      // 只处理 @/ 开头的路径别名
-      if (!id.startsWith("@/")) {
+      // 处理 @/ 开头的路径别名，或者已经被 resolve.alias 解析过的路径
+      let relativePath: string
+      let basePath: string
+
+      if (id.startsWith("@/")) {
+        relativePath = id.replace(/^@\//, "")
+        basePath = path.resolve(srcDir, relativePath)
+      } else if (id.startsWith(srcDir + "/")) {
+        // 如果已经是绝对路径（被 alias 解析后），提取相对路径
+        relativePath = path.relative(srcDir, id).replace(/\\/g, "/")
+        basePath = id
+      } else {
         return null
       }
 
-      const relativePath = id.replace(/^@\//, "")
-      const basePath = path.resolve(srcDir, relativePath)
-
       // 如果路径已经包含扩展名，先检查原始路径
       const hasExtension = extensions.some((ext) => id.endsWith(ext))
-      if (hasExtension && fs.existsSync(basePath)) {
-        const stats = fs.statSync(basePath)
-        if (stats.isFile()) {
-          return basePath
+      if (hasExtension) {
+        try {
+          if (fs.existsSync(basePath)) {
+            const stats = fs.statSync(basePath)
+            if (stats.isFile()) {
+              return basePath
+            }
+          }
+        } catch (err) {
+          // 忽略错误，继续尝试
         }
       }
 
@@ -44,7 +57,9 @@ function aliasPlugin(): Plugin {
             const stats = fs.statSync(filePath)
             if (stats.isFile()) {
               // 返回绝对路径，使用 path.normalize 确保路径格式正确
-              return path.normalize(filePath)
+              const normalizedPath = path.normalize(filePath)
+              // 确保路径使用正确的分隔符（在 Windows 上可能有问题）
+              return normalizedPath.replace(/\\/g, "/")
             }
           }
         } catch (err) {
@@ -55,11 +70,17 @@ function aliasPlugin(): Plugin {
 
       // 尝试作为目录查找 index 文件
       try {
-        if (fs.existsSync(basePath) && fs.statSync(basePath).isDirectory()) {
-          for (const ext of extensions) {
-            const indexPath = path.join(basePath, `index${ext}`)
-            if (fs.existsSync(indexPath) && fs.statSync(indexPath).isFile()) {
-              return indexPath
+        if (fs.existsSync(basePath)) {
+          const stats = fs.statSync(basePath)
+          if (stats.isDirectory()) {
+            for (const ext of extensions) {
+              const indexPath = path.join(basePath, `index${ext}`)
+              if (fs.existsSync(indexPath)) {
+                const indexStats = fs.statSync(indexPath)
+                if (indexStats.isFile()) {
+                  return path.normalize(indexPath).replace(/\\/g, "/")
+                }
+              }
             }
           }
         }
@@ -67,13 +88,9 @@ function aliasPlugin(): Plugin {
         // 忽略错误
       }
 
-      // 如果都找不到，抛出一个清晰的错误信息
-      const triedPaths = orderedExts.map((ext) => basePath + ext).join(", ")
-      throw new Error(
-        `[alias-resolver] Cannot resolve "${id}" from "${importer || "unknown"}". ` +
-          `Tried paths: ${triedPaths}. ` +
-          `Make sure the file exists in src directory.`
-      )
+      // 如果都找不到，返回 null 让 Vite 尝试其他解析方式
+      // 不要抛出错误，因为可能有其他插件或配置能够处理
+      return null
     },
   }
 }
@@ -86,10 +103,9 @@ export default defineConfig({
     }),
   ],
   resolve: {
-    // 移除 alias 配置，完全依赖插件处理路径别名
-    // alias: {
-    //   "@": path.resolve(__dirname, "./src"),
-    // },
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
     extensions: [".ts", ".tsx", ".js", ".jsx", ".mjs", ".mts", ".json"],
     preserveSymlinks: false,
   },
