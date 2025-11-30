@@ -77,12 +77,7 @@ export default defineConfig({
     }),
   ],
   resolve: {
-    alias: [
-      {
-        find: "@",
-        replacement: path.resolve(__dirname, "./src"),
-      },
-    ],
+    // 完全由插件处理路径别名，不在这里配置
     extensions: [".ts", ".tsx", ".js", ".jsx", ".mjs", ".mts", ".json"],
     preserveSymlinks: false,
   },
